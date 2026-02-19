@@ -4,6 +4,7 @@ import { ThemeProvider, CssBaseline } from "@mui/material";
 import App from "./App";
 import { theme } from "./theme/theme";
 import { BoardProvider } from "./context/BoardContext";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import "./index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
@@ -18,3 +19,5 @@ root.render(
     </ThemeProvider>
   </React.StrictMode>
 );
+
+serviceWorkerRegistration.register();
