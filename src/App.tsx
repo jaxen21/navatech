@@ -10,9 +10,14 @@ const App: React.FC = () => {
   const { state, dispatch } = useBoard();
 
   // Handle persistence
-  useDebouncedLocalStorage(state, (hydratedState) => {
-    dispatch({ type: BoardActionType.HYDRATE, payload: { state: hydratedState } });
-  });
+  const handleHydrate = React.useCallback(
+    (hydratedState: Omit<typeof state, "history" | "future">) => {
+      dispatch({ type: BoardActionType.HYDRATE, payload: { state: hydratedState } });
+    },
+    [dispatch]
+  );
+
+  useDebouncedLocalStorage(state, handleHydrate);
 
   return (
     <Box

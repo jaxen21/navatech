@@ -13,7 +13,9 @@ const BoardContext = createContext<BoardContextType | undefined>(undefined);
 export const BoardProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(boardReducer, initialState);
 
-  return <BoardContext.Provider value={{ state, dispatch }}>{children}</BoardContext.Provider>;
+  const contextValue = React.useMemo(() => ({ state, dispatch }), [state, dispatch]);
+
+  return <BoardContext.Provider value={contextValue}>{children}</BoardContext.Provider>;
 };
 
 export const useBoard = () => {
