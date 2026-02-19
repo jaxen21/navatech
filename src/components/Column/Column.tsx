@@ -2,6 +2,7 @@ import React from "react";
 import { Paper, Typography, Box, Stack } from "@mui/material";
 import { TaskId, Task } from "../../types/board";
 import { TaskCard } from "../TaskCard/TaskCard";
+import { VirtualList } from "../VirtualList/VirtualList";
 
 interface ColumnProps {
   title: string;
@@ -53,18 +54,17 @@ export const Column: React.FC<ColumnProps> = ({
         </Typography>
       </Stack>
 
-      <Box sx={{ flexGrow: 1 }}>
-        <Stack spacing={2}>
-          {taskIds.map((taskId, index) => (
-            <TaskCard
-              key={taskId}
-              taskId={taskId}
-              index={index}
-              columnId={status}
-              onEditTask={onEditTask}
-            />
-          ))}
-        </Stack>
+      <Box sx={{ flexGrow: 1, position: "relative" }}>
+        <VirtualList
+          items={taskIds}
+          itemHeight={160} // Estimated height + gap
+          containerHeight="70vh"
+          renderItem={(taskId, index) => (
+            <Box key={taskId} sx={{ pb: 2 }}>
+              <TaskCard taskId={taskId} index={index} columnId={status} onEditTask={onEditTask} />
+            </Box>
+          )}
+        />
       </Box>
     </Paper>
   );

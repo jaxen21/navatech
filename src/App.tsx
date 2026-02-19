@@ -3,6 +3,7 @@ import { Box, Container } from "@mui/material";
 import { useBoard } from "./context/BoardContext";
 import { useDebouncedLocalStorage } from "./hooks/useDebouncedLocalStorage";
 import { BoardActionType } from "./types/board";
+import { SeedBoard } from "./debug/SeedBoard";
 import { Board } from "./components/Board/Board";
 
 const App: React.FC = () => {
@@ -24,6 +25,9 @@ const App: React.FC = () => {
       <Container maxWidth="xl">
         <Board />
       </Container>
+      <SeedBoard
+        onSeed={(state) => dispatch({ type: BoardActionType.HYDRATE, payload: { state } })}
+      />
     </Box>
   );
 };
