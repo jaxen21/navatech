@@ -4,7 +4,10 @@ import { initialState } from "../state/initialState";
 
 const STORAGE_KEY = "fluxboard_state";
 
-export const useDebouncedLocalStorage = (state: BoardState, hydrationAction: (hydratedState: any) => void) => {
+export const useDebouncedLocalStorage = (
+  state: BoardState,
+  hydrationAction: (hydratedState: Omit<BoardState, "history" | "future">) => void
+) => {
   const isFirstRender = useRef(true);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -14,7 +17,6 @@ export const useDebouncedLocalStorage = (state: BoardState, hydrationAction: (hy
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        // Basic validation: check if it has 'tasks' and 'order'
         if (parsed && typeof parsed === "object" && parsed.tasks && parsed.order) {
           hydrationAction(parsed);
         } else {
@@ -23,11 +25,10 @@ export const useDebouncedLocalStorage = (state: BoardState, hydrationAction: (hy
       }
     } catch (error) {
       console.error("Failed to hydrate state from localStorage:", error);
-      // Reset to initial state on error (Repair cycle)
       localStorage.removeItem(STORAGE_KEY);
       hydrationAction(initialState);
     }
-  }, []); // Only on mount
+  }, [hydrationAction]); // Fixed dependency
 
   // Persist on state change (except filters)
   useEffect(() => {
@@ -42,7 +43,8 @@ export const useDebouncedLocalStorage = (state: BoardState, hydrationAction: (hy
 
     timeoutRef.current = setTimeout(() => {
       try {
-        const { history, future, filters, ...stateToPersist } = state;
+        const { tasks, order } = state;
+        const stateToPersist = { tasks, order };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToPersist));
       } catch (error) {
         console.error("Failed to persist state to localStorage:", error);
@@ -54,5 +56,5 @@ export const useDebouncedLocalStorage = (state: BoardState, hydrationAction: (hy
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [state.tasks, state.order]); // Only watch data structures, not filters or history
+  }, [state]); // Fixed dependency to satisfy lint
 };

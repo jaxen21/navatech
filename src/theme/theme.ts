@@ -74,7 +74,7 @@ export const theme = createTheme({
       surfaceVariant: "#E7E0EC",
       onSurfaceVariant: "#49454F",
       outline: "#79747E",
-    } as any,
+    },
   },
   typography: {
     fontFamily: '"Roboto", "Inter", "Helvetica", "Arial", sans-serif',

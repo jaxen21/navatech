@@ -1,43 +1,52 @@
 import { useMemo } from "react";
 import { useBoard } from "../context/BoardContext";
-import { TaskId, BoardActionType } from "../types/board";
+import { TaskId, BoardActionType, Priority } from "../types/board";
 
 export const useTaskFilters = () => {
   const { state, dispatch } = useBoard();
-  const { tasks, order, filters } = state;
 
-  const filteredOrder = useMemo(() => {
-    const filterFn = (id: TaskId) => {
-      const task = tasks[id];
-      if (!task) return false;
-
-      const matchesText = task.title.toLowerCase().includes(filters.text.toLowerCase()) ||
-                        task.description.toLowerCase().includes(filters.text.toLowerCase());
-      
-      const matchesPriority = filters.priority === null || task.priority === filters.priority;
-
-      return matchesText && matchesPriority;
-    };
-
-    return {
-      todo: order.todo.filter(filterFn),
-      inProgress: order.inProgress.filter(filterFn),
-      done: order.done.filter(filterFn),
-    };
-  }, [tasks, order, filters]);
+  const filters = state.filters;
 
   const setFilterText = (text: string) => {
     dispatch({ type: BoardActionType.SET_FILTER_TEXT, payload: { text } });
   };
 
   const setFilterPriority = (priority: number | null) => {
-    dispatch({ type: BoardActionType.SET_FILTER_PRIORITY, payload: { priority: priority as any } });
+    dispatch({
+      type: BoardActionType.SET_FILTER_PRIORITY,
+      payload: { priority: priority as Priority | null },
+    });
   };
 
+  const filteredOrder = useMemo(() => {
+    const { text, priority } = filters;
+    const result: Record<string, TaskId[]> = {
+      todo: [],
+      inProgress: [],
+      done: [],
+    };
+
+    (Object.keys(state.order) as Array<keyof typeof state.order>).forEach((column) => {
+      result[column] = state.order[column].filter((taskId) => {
+        const task = state.tasks[taskId];
+        if (!task) return false;
+
+        const matchesText =
+          task.title.toLowerCase().includes(text.toLowerCase()) ||
+          task.description.toLowerCase().includes(text.toLowerCase());
+        const matchesPriority = priority === null || task.priority === priority;
+
+        return matchesText && matchesPriority;
+      });
+    });
+
+    return result;
+  }, [state, filters]);
+
   return {
-    filteredOrder,
     filters,
     setFilterText,
     setFilterPriority,
+    filteredOrder,
   };
 };

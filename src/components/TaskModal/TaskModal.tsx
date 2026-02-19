@@ -89,12 +89,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ open, onClose, task }) => 
         <Button onClick={onClose} color="secondary">
           Cancel
         </Button>
-        <Button
-          onClick={handleSubmit}
-          variant="contained"
-          color="primary"
-          disabled={!title.trim()}
-        >
+        <Button onClick={handleSubmit} variant="contained" color="primary" disabled={!title.trim()}>
           {task ? "Save Changes" : "Create Task"}
         </Button>
       </DialogActions>

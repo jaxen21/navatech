@@ -13,11 +13,7 @@ const BoardContext = createContext<BoardContextType | undefined>(undefined);
 export const BoardProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(boardReducer, initialState);
 
-  return (
-    <BoardContext.Provider value={{ state, dispatch }}>
-      {children}
-    </BoardContext.Provider>
-  );
+  return <BoardContext.Provider value={{ state, dispatch }}>{children}</BoardContext.Provider>;
 };
 
 export const useBoard = () => {

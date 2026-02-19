@@ -3,19 +3,19 @@ import { Grid, Typography, Button, Box, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
-import { Column } from "../Column/Column";
 import { Filters } from "../Filters/Filters";
 import { TaskModal } from "../TaskModal/TaskModal";
 import { useTaskFilters } from "../../hooks/useTaskFilters";
 import { useUndoRedo } from "../../hooks/useUndoRedo";
 import { useBoardDnD } from "../../hooks/useBoardDnD";
 import { Task } from "../../types/board";
+import { Column } from "../Column/Column";
 
 export const Board: React.FC = () => {
   const { filteredOrder } = useTaskFilters();
   const { undo, redo, canUndo, canRedo } = useUndoRedo();
   const { onDragOver, onDrop } = useBoardDnD(filteredOrder);
-  
+
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | undefined>(undefined);
 
@@ -48,20 +48,10 @@ export const Board: React.FC = () => {
         </Typography>
 
         <Stack direction="row" spacing={1}>
-          <Button
-            variant="outlined"
-            onClick={undo}
-            disabled={!canUndo}
-            startIcon={<UndoIcon />}
-          >
+          <Button variant="outlined" onClick={undo} disabled={!canUndo} startIcon={<UndoIcon />}>
             Undo
           </Button>
-          <Button
-            variant="outlined"
-            onClick={redo}
-            disabled={!canRedo}
-            startIcon={<RedoIcon />}
-          >
+          <Button variant="outlined" onClick={redo} disabled={!canRedo} startIcon={<RedoIcon />}>
             Redo
           </Button>
           <Button
@@ -78,8 +68,8 @@ export const Board: React.FC = () => {
 
       <Filters />
 
-      <Grid container spacing={3} sx={{ mt: 2 }}>
-        <Grid size={{ xs: 12, md: 4 }}>
+      <Grid container spacing={3} sx={{ mt: 2 }} component="div">
+        <Grid size={{ xs: 12, md: 4 }} component="div">
           <Column
             title="To Do"
             status="todo"
@@ -89,17 +79,19 @@ export const Board: React.FC = () => {
             onEditTask={handleEditTask}
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4 }} component="div">
           <Column
             title="In Progress"
             status="inProgress"
             taskIds={filteredOrder.inProgress}
             onDragOver={onDragOver}
-            onDrop={(e: React.DragEvent) => onDrop(e, "inProgress", filteredOrder.inProgress.length)}
+            onDrop={(e: React.DragEvent) =>
+              onDrop(e, "inProgress", filteredOrder.inProgress.length)
+            }
             onEditTask={handleEditTask}
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4 }} component="div">
           <Column
             title="Done"
             status="done"
@@ -111,11 +103,7 @@ export const Board: React.FC = () => {
         </Grid>
       </Grid>
 
-      <TaskModal
-        open={modalOpen}
-        onClose={handleCloseModal}
-        task={editingTask}
-      />
+      <TaskModal open={modalOpen} onClose={handleCloseModal} task={editingTask} />
     </Box>
   );
 };

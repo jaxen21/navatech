@@ -1,9 +1,22 @@
 import React from "react";
-import { Stack, TextField, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
+import {
+  Stack,
+  TextField,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  SelectChangeEvent,
+} from "@mui/material";
 import { useTaskFilters } from "../../hooks/useTaskFilters";
 
 export const Filters: React.FC = () => {
   const { filters, setFilterText, setFilterPriority } = useTaskFilters();
+
+  const handlePriorityChange = (e: SelectChangeEvent<number | "">) => {
+    const val = e.target.value;
+    setFilterPriority(val === "" ? null : (val as number));
+  };
 
   return (
     <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mb: 2 }}>
@@ -17,10 +30,10 @@ export const Filters: React.FC = () => {
       />
       <FormControl size="small" sx={{ minWidth: 150 }}>
         <InputLabel>Priority</InputLabel>
-        <Select
+        <Select<number | "">
           value={filters.priority === null ? "" : filters.priority}
           label="Priority"
-          onChange={(e) => setFilterPriority(e.target.value === "" ? null : Number(e.target.value))}
+          onChange={handlePriorityChange}
         >
           <MenuItem value="">All</MenuItem>
           <MenuItem value={1}>Low</MenuItem>

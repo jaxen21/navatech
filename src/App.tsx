@@ -1,9 +1,9 @@
 import React from "react";
 import { Box, Container } from "@mui/material";
-import { Board } from "./components/Board/Board";
 import { useBoard } from "./context/BoardContext";
 import { useDebouncedLocalStorage } from "./hooks/useDebouncedLocalStorage";
 import { BoardActionType } from "./types/board";
+import { Board } from "./components/Board/Board";
 
 const App: React.FC = () => {
   const { state, dispatch } = useBoard();

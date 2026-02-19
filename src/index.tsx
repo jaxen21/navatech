@@ -6,9 +6,7 @@ import { theme } from "./theme/theme";
 import { BoardProvider } from "./context/BoardContext";
 import "./index.css";
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 
 root.render(
   <React.StrictMode>

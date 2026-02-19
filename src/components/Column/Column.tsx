@@ -12,7 +12,14 @@ interface ColumnProps {
   onEditTask: (task: Task) => void;
 }
 
-export const Column: React.FC<ColumnProps> = ({ title, status, taskIds, onDragOver, onDrop, onEditTask }) => {
+export const Column: React.FC<ColumnProps> = ({
+  title,
+  status,
+  taskIds,
+  onDragOver,
+  onDrop,
+  onEditTask,
+}) => {
   return (
     <Paper
       onDragOver={onDragOver}
@@ -54,9 +61,6 @@ export const Column: React.FC<ColumnProps> = ({ title, status, taskIds, onDragOv
               taskId={taskId}
               index={index}
               columnId={status}
-              onEdit={() => {
-                // We'll get the task from state in TaskCard
-              }}
               onEditTask={onEditTask}
             />
           ))}

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 
 /**
- * useLiveTimer hook solves the stale closure challenge by providing a 
+ * useLiveTimer hook solves the stale closure challenge by providing a
  * synchronized "now" timestamp that updates every 10 seconds.
- * 
- * Components using this will re-render on the interval, ensuring 
- * "X seconds ago" labels are always accurate without needing to 
+ *
+ * Components using this will re-render on the interval, ensuring
+ * "X seconds ago" labels are always accurate without needing to
  * reach into a stale state.
  */
 export const useLiveTimer = (intervalMs: number = 10000) => {

@@ -1,4 +1,4 @@
-import { BoardAction, BoardActionType, BoardState, TaskId, TaskStatus } from "../types/board";
+import { BoardAction, BoardActionType, BoardState, TaskStatus } from "../types/board";
 
 const MAX_HISTORY = 15;
 
@@ -66,11 +66,13 @@ export const boardReducer = (state: BoardState, action: BoardAction): BoardState
 
     case BoardActionType.MOVE_TASK: {
       const newState = pushToHistory(state);
-      const { taskId, sourceColumn, destinationColumn, sourceIndex, destinationIndex } = action.payload;
+      const { taskId, sourceColumn, destinationColumn, sourceIndex, destinationIndex } =
+        action.payload;
 
       const newOrder = { ...newState.order };
       const sourceList = [...newOrder[sourceColumn]];
-      const destList = sourceColumn === destinationColumn ? sourceList : [...newOrder[destinationColumn]];
+      const destList =
+        sourceColumn === destinationColumn ? sourceList : [...newOrder[destinationColumn]];
 
       sourceList.splice(sourceIndex, 1);
       destList.splice(destinationIndex, 0, taskId);

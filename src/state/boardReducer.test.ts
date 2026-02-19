@@ -1,6 +1,6 @@
 import { boardReducer } from "./boardReducer";
 import { initialState } from "./initialState";
-import { Task, BoardState, TaskStatus, BoardActionType } from "../types/board";
+import { Task, TaskStatus, BoardAction, BoardActionType } from "../types/board";
 
 const mockTask: Task = {
   id: "1",
@@ -14,7 +14,7 @@ const mockTask: Task = {
 
 describe("boardReducer", () => {
   it("should handle ADD_TASK", () => {
-    const action = { type: BoardActionType.ADD_TASK, payload: { task: mockTask } } as any;
+    const action: BoardAction = { type: BoardActionType.ADD_TASK, payload: { task: mockTask } };
     const state = boardReducer(initialState, action);
 
     expect(state.tasks["1"]).toEqual(mockTask);
@@ -28,7 +28,7 @@ describe("boardReducer", () => {
       type: BoardActionType.ADD_TASK,
       payload: { task: mockTask },
     });
-    const action = {
+    const action: BoardAction = {
       type: BoardActionType.UPDATE_TASK,
       payload: { id: "1", updates: { title: "Updated Title" } },
     };
@@ -43,7 +43,7 @@ describe("boardReducer", () => {
       type: BoardActionType.ADD_TASK,
       payload: { task: mockTask },
     });
-    const action = { type: BoardActionType.DELETE_TASK, payload: { id: "1" } };
+    const action: BoardAction = { type: BoardActionType.DELETE_TASK, payload: { id: "1" } };
     const state = boardReducer(startState, action);
 
     expect(state.tasks["1"]).toBeUndefined();
@@ -53,16 +53,19 @@ describe("boardReducer", () => {
 
   it("should handle MOVE_TASK (intra-column)", () => {
     const task2 = { ...mockTask, id: "2" };
-    let state = boardReducer(initialState, { type: BoardActionType.ADD_TASK, payload: { task: mockTask } });
+    let state = boardReducer(initialState, {
+      type: BoardActionType.ADD_TASK,
+      payload: { task: mockTask },
+    });
     state = boardReducer(state, { type: BoardActionType.ADD_TASK, payload: { task: task2 } });
 
     // Initial order: [2, 1] (since ADD_TASK prepends)
-    const action = {
+    const action: BoardAction = {
       type: BoardActionType.MOVE_TASK,
       payload: {
         taskId: "2",
-        sourceColumn: "todo" as const,
-        destinationColumn: "todo" as const,
+        sourceColumn: "todo",
+        destinationColumn: "todo",
         sourceIndex: 0,
         destinationIndex: 1,
       },
@@ -73,14 +76,17 @@ describe("boardReducer", () => {
   });
 
   it("should handle MOVE_TASK (inter-column)", () => {
-    let state = boardReducer(initialState, { type: BoardActionType.ADD_TASK, payload: { task: mockTask } });
+    let state = boardReducer(initialState, {
+      type: BoardActionType.ADD_TASK,
+      payload: { task: mockTask },
+    });
 
-    const action = {
+    const action: BoardAction = {
       type: BoardActionType.MOVE_TASK,
       payload: {
         taskId: "1",
-        sourceColumn: "todo" as const,
-        destinationColumn: "inProgress" as const,
+        sourceColumn: "todo",
+        destinationColumn: "inProgress",
         sourceIndex: 0,
         destinationIndex: 0,
       },
@@ -93,7 +99,10 @@ describe("boardReducer", () => {
   });
 
   it("should handle UNDO and REDO", () => {
-    let state = boardReducer(initialState, { type: BoardActionType.ADD_TASK, payload: { task: mockTask } });
+    let state = boardReducer(initialState, {
+      type: BoardActionType.ADD_TASK,
+      payload: { task: mockTask },
+    });
     expect(state.order.todo).toContain("1");
 
     state = boardReducer(state, { type: BoardActionType.UNDO });
