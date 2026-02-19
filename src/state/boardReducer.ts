@@ -1,4 +1,4 @@
-import { BoardAction, BoardState, TaskId } from "../types/board";
+import { BoardAction, BoardState, TaskId, TaskStatus } from "../types/board";
 
 const MAX_HISTORY = 15;
 
@@ -83,14 +83,14 @@ export const boardReducer = (state: BoardState, action: BoardAction): BoardState
       // Update task status if it changed columns
       const updatedTasks = { ...newState.tasks };
       if (sourceColumn !== destinationColumn) {
-        const newStatusMap: Record<string, "todo" | "inProgress" | "done"> = {
+        const newStatusMap: Record<keyof BoardState["order"], TaskStatus> = {
           todo: "todo",
           inProgress: "in-progress",
           done: "done",
         };
         updatedTasks[taskId] = {
           ...updatedTasks[taskId],
-          status: newStatusMap[destinationColumn] as any,
+          status: newStatusMap[destinationColumn],
           updatedAt: Date.now(),
         };
       }
