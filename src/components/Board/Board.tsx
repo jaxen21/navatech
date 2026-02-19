@@ -41,7 +41,7 @@ export const Board: React.FC = () => {
         justifyContent="space-between"
         alignItems="center"
         spacing={2}
-        sx={{ mb: 4 }}
+        sx={{ mb: 2 }}
       >
         <Typography variant="h4" component="h1" color="primary" fontWeight="bold">
           FluxBoard

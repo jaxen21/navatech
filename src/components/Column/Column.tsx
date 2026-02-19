@@ -36,7 +36,7 @@ export const Column: React.FC<ColumnProps> = ({
         p: 2,
         minHeight: "70vh",
         bgcolor: "#F3EDF7", // M3 Surface Container
-        borderRadius: 3,
+        borderRadius: 2,
         border: "1px solid #CAC4D0",
         display: "flex",
         flexDirection: "column",

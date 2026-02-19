@@ -24,7 +24,7 @@ const App: React.FC = () => {
       sx={{
         minHeight: "100vh",
         bgcolor: "background.default",
-        py: 4,
+        py: 2,
       }}
     >
       <Container maxWidth="xl">
