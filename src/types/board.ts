@@ -1,6 +1,10 @@
 export type TaskId = string;
 
-export type TaskStatus = "todo" | "in-progress" | "done";
+export enum TaskStatus {
+  TODO = "todo",
+  IN_PROGRESS = "in-progress",
+  DONE = "done",
+}
 
 export type Priority = 1 | 2 | 3; // 1: Low, 2: Medium, 3: High
 

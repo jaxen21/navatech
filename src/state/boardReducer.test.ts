@@ -1,12 +1,12 @@
 import { boardReducer } from "./boardReducer";
 import { initialState } from "./initialState";
-import { Task, BoardState } from "../types/board";
+import { Task, BoardState, TaskStatus } from "../types/board";
 
 const mockTask: Task = {
   id: "1",
   title: "Test Task",
   description: "Test Description",
-  status: "todo",
+  status: TaskStatus.TODO,
   priority: 1,
   createdAt: 123,
   updatedAt: 123,

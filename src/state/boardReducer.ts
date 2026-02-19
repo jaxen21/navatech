@@ -84,9 +84,9 @@ export const boardReducer = (state: BoardState, action: BoardAction): BoardState
       const updatedTasks = { ...newState.tasks };
       if (sourceColumn !== destinationColumn) {
         const newStatusMap: Record<keyof BoardState["order"], TaskStatus> = {
-          todo: "todo",
-          inProgress: "in-progress",
-          done: "done",
+          todo: TaskStatus.TODO,
+          inProgress: TaskStatus.IN_PROGRESS,
+          done: TaskStatus.DONE,
         };
         updatedTasks[taskId] = {
           ...updatedTasks[taskId],
