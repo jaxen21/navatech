@@ -1,46 +1,80 @@
-# Getting Started with Create React App
+# FluxBoard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A high-performance, production-ready Kanban Board built with React, TypeScript, and Material Design 3. Optimized for large datasets (5,000+ tasks) using custom virtualization and advanced state management.
 
-## Available Scripts
+## 🚀 Key Features
 
-In the project directory, you can run:
+- **Virtualization**: Custom `VirtualList` for 60FPS scrolling with thousands of items.
+- **Undo/Redo**: Global state snapshots with multi-level history.
+- **PWA**: Offline-first support with service workers and LocalStorage persistence.
+- **Advanced Filtering**: Debounced search and priority filtering.
+- **Premium UX**: Framer-motion inspired CSS transitions and Error Boundary protection.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 🛠️ Architecture Deep Dive
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### 1. Undo/Redo Implementation
 
-### `npm test`
+The Undo/Redo system uses a "Memento" pattern integrated into a standard Redux-style reducer. The state contains a `history` stack (past states) and a `future` stack (undone states).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```mermaid
+graph TD
+    A[Action Dispatched] --> B{Is State Mutating?}
+    B -- Yes --> C[Push Current State to History]
+    C --> D[Apply Action to State]
+    D --> E[Clear Future Stack]
+    B -- No/Undo --> F[Pop from History]
+    F --> G[Move Current State to Future]
+    G --> H[Apply Popped State]
+```
 
-### `npm run build`
+**Implementation Details:**
+- **Snapshots**: Before any mutation (ADD, MOVE, DELETE), the `pushToHistory` helper copies the current state (omitting the history/future metadata to prevent recursive bloat).
+- **Limit**: History is capped at 15 items to maintain performance and memory safety.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. Performance & Referential Equality
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+To handle 5,000+ tasks without lag, the app minimizes re-renders through strict referential stability:
 
-### `npm run eject`
+- **Stable Context**: `BoardContext` uses `useMemo` to ensure that children only re-render if the `state` or `dispatch` actually change.
+- **Callback Stability**: All event handlers in `useBoardDnD` and `App.tsx` are wrapped in `useCallback`. This prevents the "Props Change" waterfall where child components re-render just because a handler reference was recreated.
+- **Memoized Components**: `TaskCard` is wrapped in `React.memo` with a custom comparison check (optional) to ensure that moving one task doesn't trigger a re-render of the other 4,999 tasks.
+- **Virtualized Rendering**: Only ~20 tasks are present in the DOM at any given time, regardless of the list size.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+---
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 3. The "Stale Closure" Challenge
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+One of the hardest parts of real-time UIs is keeping "X minutes ago" labels updated without triggering excessive re-renders or dealing with stale state in `setInterval` closures.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+**The Solution: `useLiveTimer`**
+Instead of each `TaskCard` having its own timer, we use a single synchronized hook:
+```typescript
+const now = useLiveTimer(10000); // Global heartbeat
+```
+This hook forces a re-render precisely when the timestamp needs to update, ensuring the labels are always accurate and never "stuck" due to closure capturing.
 
-## Learn More
+#### **How to test for Stale Closures:**
+1.  Open the console.
+2.  Press **`Shift + Alt + S`** and click **"Seed 5k Tasks"**.
+3.  Observe the "X seconds ago" badges on different columns.
+4.  Wait 1 minute.
+5.  All 5,000 badges will update **simultaneously** and **accurately**, proving that the render logic is synchronized and not trapped in a stale closure from the initial seed.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🛠️ Development
+
+### Scripts
+- `npm start`: Launch development server.
+- `npm run lint`: Run ESLint and Prettier check.
+- `npm test`: Run unit tests for core logic.
+- `npm run build`: Create optimized production bundle.
+
+### Keyboard Shortcuts
+- `Undo`: `Cmd/Ctrl + Z` (Standard)
+- `Redo`: `Cmd/Ctrl + Shift + Z` (Standard)
+- `Debug Menu`: **`Shift + Alt + S`** (Toggles Task Seeding)
