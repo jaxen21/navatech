@@ -62,6 +62,11 @@ export const TaskCard = memo(
           cursor: "grab",
           "&:active": { cursor: "grabbing" },
           position: "relative",
+          transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+          "&:hover": {
+            transform: "translateY(-4px)",
+            boxShadow: (theme) => theme.shadows[4],
+          },
           "&:hover .action-buttons": { opacity: 1 },
         }}
       >

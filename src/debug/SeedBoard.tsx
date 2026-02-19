@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { BoardState, Priority, Task, TaskStatus } from "../types/board";
 
 export const generateStressTestData = (
@@ -43,6 +44,21 @@ export const generateStressTestData = (
 export const SeedBoard: React.FC<{
   onSeed: (state: Omit<BoardState, "history" | "future">) => void;
 }> = ({ onSeed }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Shift + Alt + S to toggle seed button
+      if (e.shiftKey && e.altKey && e.key.toLowerCase() === "s") {
+        setIsVisible((v) => !v);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  if (!isVisible) return null;
+
   return (
     <button
       onClick={() => onSeed(generateStressTestData())}
@@ -50,15 +66,18 @@ export const SeedBoard: React.FC<{
         position: "fixed",
         bottom: 10,
         right: 10,
-        opacity: 0.1,
         zIndex: 9999,
-        background: "transparent",
+        background: "#6750A4",
+        color: "white",
         border: "none",
+        padding: "8px 16px",
+        borderRadius: "20px",
         cursor: "pointer",
-        fontSize: "10px",
+        fontSize: "12px",
+        boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
       }}
     >
-      Seed 5k
+      Seed 5k Tasks
     </button>
   );
 };
