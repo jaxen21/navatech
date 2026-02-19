@@ -86,4 +86,4 @@ This hook forces a re-render precisely when the timestamp needs to update, ensur
 ### Keyboard Shortcuts
 - `Undo`: `Cmd/Ctrl + Z` (Standard)
 - `Redo`: `Cmd/Ctrl + Shift + Z` (Standard)
-- `Debug Menu`: **`Shift + Alt + S`** (Toggles Task Seeding)
+- `Debug Menu`: **`Shift + Alt + S`** (Toggles Task Seeding; state persists across refreshes)

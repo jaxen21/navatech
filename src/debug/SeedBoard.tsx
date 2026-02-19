@@ -44,13 +44,19 @@ export const generateStressTestData = (
 export const SeedBoard: React.FC<{
   onSeed: (state: Omit<BoardState, "history" | "future">) => void;
 }> = ({ onSeed }) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(() => {
+    return localStorage.getItem("fluxboard_debug_visible") === "true";
+  });
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Shift + Alt + S to toggle seed button
-      if (e.shiftKey && e.altKey && e.key.toLowerCase() === "s") {
-        setIsVisible((v) => !v);
+      // Shift + Alt + S using code for cross-layout reliability
+      if (e.shiftKey && e.altKey && e.code === "KeyS") {
+        setIsVisible((v) => {
+          const next = !v;
+          localStorage.setItem("fluxboard_debug_visible", String(next));
+          return next;
+        });
       }
     };
     window.addEventListener("keydown", handleKeyDown);
