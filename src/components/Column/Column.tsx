@@ -8,6 +8,12 @@ interface ColumnProps {
   title: string;
   status: string;
   taskIds: TaskId[];
+  onDragStart: (
+    e: React.DragEvent,
+    taskId: TaskId,
+    sourceColumn: string,
+    sourceIndex: number
+  ) => void;
   onDragOver: (e: React.DragEvent) => void;
   onDrop: (e: React.DragEvent, index: number) => void;
   onEditTask: (task: Task) => void;
@@ -17,6 +23,7 @@ export const Column: React.FC<ColumnProps> = ({
   title,
   status,
   taskIds,
+  onDragStart,
   onDragOver,
   onDrop,
   onEditTask,
@@ -60,8 +67,22 @@ export const Column: React.FC<ColumnProps> = ({
           itemHeight={160} // Estimated height + gap
           containerHeight="70vh"
           renderItem={(taskId, index) => (
-            <Box key={taskId} sx={{ pb: 2 }}>
-              <TaskCard taskId={taskId} index={index} columnId={status} onEditTask={onEditTask} />
+            <Box
+              key={taskId}
+              sx={{ pb: 2 }}
+              onDragOver={onDragOver}
+              onDrop={(e) => {
+                e.stopPropagation();
+                onDrop(e, index);
+              }}
+            >
+              <TaskCard
+                taskId={taskId}
+                index={index}
+                columnId={status}
+                onDragStart={onDragStart}
+                onEditTask={onEditTask}
+              />
             </Box>
           )}
         />

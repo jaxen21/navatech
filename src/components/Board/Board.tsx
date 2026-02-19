@@ -14,7 +14,7 @@ import { Column } from "../Column/Column";
 export const Board: React.FC = () => {
   const { filteredOrder } = useTaskFilters();
   const { undo, redo, canUndo, canRedo } = useUndoRedo();
-  const { onDragOver, onDrop } = useBoardDnD(filteredOrder);
+  const { onDragStart, onDragOver, onDrop } = useBoardDnD(filteredOrder);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | undefined>(undefined);
@@ -74,8 +74,9 @@ export const Board: React.FC = () => {
             title="To Do"
             status="todo"
             taskIds={filteredOrder.todo}
+            onDragStart={onDragStart}
             onDragOver={onDragOver}
-            onDrop={(e: React.DragEvent) => onDrop(e, "todo", filteredOrder.todo.length)}
+            onDrop={(e: React.DragEvent, index: number) => onDrop(e, "todo", index)}
             onEditTask={handleEditTask}
           />
         </Grid>
@@ -84,10 +85,9 @@ export const Board: React.FC = () => {
             title="In Progress"
             status="inProgress"
             taskIds={filteredOrder.inProgress}
+            onDragStart={onDragStart}
             onDragOver={onDragOver}
-            onDrop={(e: React.DragEvent) =>
-              onDrop(e, "inProgress", filteredOrder.inProgress.length)
-            }
+            onDrop={(e: React.DragEvent, index: number) => onDrop(e, "inProgress", index)}
             onEditTask={handleEditTask}
           />
         </Grid>
@@ -96,8 +96,9 @@ export const Board: React.FC = () => {
             title="Done"
             status="done"
             taskIds={filteredOrder.done}
+            onDragStart={onDragStart}
             onDragOver={onDragOver}
-            onDrop={(e: React.DragEvent) => onDrop(e, "done", filteredOrder.done.length)}
+            onDrop={(e: React.DragEvent, index: number) => onDrop(e, "done", index)}
             onEditTask={handleEditTask}
           />
         </Grid>

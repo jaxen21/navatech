@@ -5,15 +5,19 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { TaskId, Priority, Task } from "../../types/board";
 import { useBoard } from "../../context/BoardContext";
-import { useBoardDnD } from "../../hooks/useBoardDnD";
 import { useLiveTimer, formatTimeAgo } from "../../hooks/useLiveTimer";
-import { useTaskFilters } from "../../hooks/useTaskFilters";
 import { useTaskOperations } from "../../hooks/useTaskOperations";
 
 interface TaskCardProps {
   taskId: TaskId;
   index: number;
   columnId: string;
+  onDragStart: (
+    e: React.DragEvent,
+    taskId: TaskId,
+    sourceColumn: string,
+    sourceIndex: number
+  ) => void;
   onEditTask: (task: Task) => void;
 }
 
@@ -43,14 +47,12 @@ const getPriorityLabel = (priority: Priority) => {
   }
 };
 
-export const TaskCard = memo(
-  ({ taskId, index, columnId, onEditTask }: TaskCardProps) => {
+export const TaskCard: React.FC<TaskCardProps> = memo(
+  ({ taskId, index, columnId, onDragStart, onEditTask }) => {
     const { state } = useBoard();
     const { deleteTask } = useTaskOperations();
-    const { filteredOrder } = useTaskFilters();
     const task = state.tasks[taskId];
-    const now = useLiveTimer(10000); // Update every 10s
-    const { onDragStart } = useBoardDnD(filteredOrder);
+    const now = useLiveTimer(); // Update every 10s
 
     if (!task) return null;
 
