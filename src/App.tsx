@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Box, Container } from "@mui/material";
+import { Board } from "./components/Board/Board";
+import { useBoard } from "./context/BoardContext";
+import { useDebouncedLocalStorage } from "./hooks/useDebouncedLocalStorage";
+import { BoardActionType } from "./types/board";
 
-function App() {
+const App: React.FC = () => {
+  const { state, dispatch } = useBoard();
+
+  // Handle persistence
+  useDebouncedLocalStorage(state, (hydratedState) => {
+    dispatch({ type: BoardActionType.HYDRATE, payload: { state: hydratedState } });
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        bgcolor: "background.default",
+        py: 4,
+      }}
+    >
+      <Container maxWidth="xl">
+        <Board />
+      </Container>
+    </Box>
   );
-}
+};
 
 export default App;

@@ -14,7 +14,7 @@ const mockTask: Task = {
 
 describe("boardReducer", () => {
   it("should handle ADD_TASK", () => {
-    const action = { type: BoardActionType.ADD_TASK, payload: { task: mockTask } };
+    const action = { type: BoardActionType.ADD_TASK, payload: { task: mockTask } } as any;
     const state = boardReducer(initialState, action);
 
     expect(state.tasks["1"]).toEqual(mockTask);
