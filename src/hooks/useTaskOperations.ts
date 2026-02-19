@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useBoard } from "../context/BoardContext";
-import { Task, TaskId, Priority, TaskStatus } from "../types/board";
+import { Task, TaskId, Priority, TaskStatus, BoardActionType } from "../types/board";
 
 export const useTaskOperations = () => {
   const { dispatch } = useBoard();
@@ -16,21 +16,21 @@ export const useTaskOperations = () => {
         createdAt: Date.now(),
         updatedAt: Date.now(),
       };
-      dispatch({ type: "ADD_TASK", payload: { task: newTask } });
+      dispatch({ type: BoardActionType.ADD_TASK, payload: { task: newTask } });
     },
     [dispatch]
   );
 
   const updateTask = useCallback(
     (id: TaskId, updates: Partial<Task>) => {
-      dispatch({ type: "UPDATE_TASK", payload: { id, updates } });
+      dispatch({ type: BoardActionType.UPDATE_TASK, payload: { id, updates } });
     },
     [dispatch]
   );
 
   const deleteTask = useCallback(
     (id: TaskId) => {
-      dispatch({ type: "DELETE_TASK", payload: { id } });
+      dispatch({ type: BoardActionType.DELETE_TASK, payload: { id } });
     },
     [dispatch]
   );
@@ -44,7 +44,7 @@ export const useTaskOperations = () => {
       destinationIndex: number
     ) => {
       dispatch({
-        type: "MOVE_TASK",
+        type: BoardActionType.MOVE_TASK,
         payload: {
           taskId,
           sourceColumn,

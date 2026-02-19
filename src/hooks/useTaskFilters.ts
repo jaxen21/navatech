@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useBoard } from "../context/BoardContext";
-import { TaskId } from "../types/board";
+import { TaskId, BoardActionType } from "../types/board";
 
 export const useTaskFilters = () => {
   const { state, dispatch } = useBoard();
@@ -27,11 +27,11 @@ export const useTaskFilters = () => {
   }, [tasks, order, filters]);
 
   const setFilterText = (text: string) => {
-    dispatch({ type: "SET_FILTER_TEXT", payload: { text } });
+    dispatch({ type: BoardActionType.SET_FILTER_TEXT, payload: { text } });
   };
 
   const setFilterPriority = (priority: number | null) => {
-    dispatch({ type: "SET_FILTER_PRIORITY", payload: { priority: priority as any } });
+    dispatch({ type: BoardActionType.SET_FILTER_PRIORITY, payload: { priority: priority as any } });
   };
 
   return {

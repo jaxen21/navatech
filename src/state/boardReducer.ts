@@ -1,4 +1,4 @@
-import { BoardAction, BoardState, TaskId, TaskStatus } from "../types/board";
+import { BoardAction, BoardActionType, BoardState, TaskId, TaskStatus } from "../types/board";
 
 const MAX_HISTORY = 15;
 
@@ -14,7 +14,7 @@ const pushToHistory = (state: BoardState): BoardState => {
 
 export const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
   switch (action.type) {
-    case "ADD_TASK": {
+    case BoardActionType.ADD_TASK: {
       const newState = pushToHistory(state);
       const { task } = action.payload;
       return {
@@ -30,7 +30,7 @@ export const boardReducer = (state: BoardState, action: BoardAction): BoardState
       };
     }
 
-    case "UPDATE_TASK": {
+    case BoardActionType.UPDATE_TASK: {
       const newState = pushToHistory(state);
       const { id, updates } = action.payload;
       if (!newState.tasks[id]) return state;
@@ -48,7 +48,7 @@ export const boardReducer = (state: BoardState, action: BoardAction): BoardState
       };
     }
 
-    case "DELETE_TASK": {
+    case BoardActionType.DELETE_TASK: {
       const newState = pushToHistory(state);
       const { id } = action.payload;
       const { [id]: _, ...remainingTasks } = newState.tasks;
@@ -64,7 +64,7 @@ export const boardReducer = (state: BoardState, action: BoardAction): BoardState
       };
     }
 
-    case "MOVE_TASK": {
+    case BoardActionType.MOVE_TASK: {
       const newState = pushToHistory(state);
       const { taskId, sourceColumn, destinationColumn, sourceIndex, destinationIndex } = action.payload;
 
@@ -102,7 +102,7 @@ export const boardReducer = (state: BoardState, action: BoardAction): BoardState
       };
     }
 
-    case "UNDO": {
+    case BoardActionType.UNDO: {
       if (state.history.length === 0) return state;
 
       const [previousState, ...remainingHistory] = state.history;
@@ -115,7 +115,7 @@ export const boardReducer = (state: BoardState, action: BoardAction): BoardState
       } as BoardState;
     }
 
-    case "REDO": {
+    case BoardActionType.REDO: {
       if (state.future.length === 0) return state;
 
       const [nextState, ...remainingFuture] = state.future;
@@ -128,7 +128,7 @@ export const boardReducer = (state: BoardState, action: BoardAction): BoardState
       } as BoardState;
     }
 
-    case "HYDRATE": {
+    case BoardActionType.HYDRATE: {
       return {
         ...state,
         ...action.payload.state,
@@ -137,7 +137,7 @@ export const boardReducer = (state: BoardState, action: BoardAction): BoardState
       };
     }
 
-    case "SET_FILTER_TEXT": {
+    case BoardActionType.SET_FILTER_TEXT: {
       return {
         ...state,
         filters: {
@@ -147,7 +147,7 @@ export const boardReducer = (state: BoardState, action: BoardAction): BoardState
       };
     }
 
-    case "SET_FILTER_PRIORITY": {
+    case BoardActionType.SET_FILTER_PRIORITY: {
       return {
         ...state,
         filters: {

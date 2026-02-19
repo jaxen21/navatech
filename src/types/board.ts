@@ -33,12 +33,24 @@ export interface BoardState {
   future: Omit<BoardState, "history" | "future">[];
 }
 
+export enum BoardActionType {
+  ADD_TASK = "ADD_TASK",
+  UPDATE_TASK = "UPDATE_TASK",
+  DELETE_TASK = "DELETE_TASK",
+  MOVE_TASK = "MOVE_TASK",
+  UNDO = "UNDO",
+  REDO = "REDO",
+  HYDRATE = "HYDRATE",
+  SET_FILTER_TEXT = "SET_FILTER_TEXT",
+  SET_FILTER_PRIORITY = "SET_FILTER_PRIORITY",
+}
+
 export type BoardAction =
-  | { type: "ADD_TASK"; payload: { task: Task } }
-  | { type: "UPDATE_TASK"; payload: { id: TaskId; updates: Partial<Task> } }
-  | { type: "DELETE_TASK"; payload: { id: TaskId } }
+  | { type: BoardActionType.ADD_TASK; payload: { task: Task } }
+  | { type: BoardActionType.UPDATE_TASK; payload: { id: TaskId; updates: Partial<Task> } }
+  | { type: BoardActionType.DELETE_TASK; payload: { id: TaskId } }
   | {
-      type: "MOVE_TASK";
+      type: BoardActionType.MOVE_TASK;
       payload: {
         taskId: TaskId;
         sourceColumn: keyof BoardState["order"];
@@ -47,8 +59,8 @@ export type BoardAction =
         destinationIndex: number;
       };
     }
-  | { type: "UNDO" }
-  | { type: "REDO" }
-  | { type: "HYDRATE"; payload: { state: Omit<BoardState, "history" | "future"> } }
-  | { type: "SET_FILTER_TEXT"; payload: { text: string } }
-  | { type: "SET_FILTER_PRIORITY"; payload: { priority: Priority | null } };
+  | { type: BoardActionType.UNDO }
+  | { type: BoardActionType.REDO }
+  | { type: BoardActionType.HYDRATE; payload: { state: Omit<BoardState, "history" | "future"> } }
+  | { type: BoardActionType.SET_FILTER_TEXT; payload: { text: string } }
+  | { type: BoardActionType.SET_FILTER_PRIORITY; payload: { priority: Priority | null } };
