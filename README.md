@@ -14,24 +14,33 @@ A high-performance, production-ready Kanban Board built with React, TypeScript, 
 
 ## 🛠️ Architecture Deep Dive
 
-### 1. Undo/Redo Implementation
+### 1. Undo/Redo Mechanism (The Time-Travel Engine)
 
-The Undo/Redo system uses a "Memento" pattern integrated into a standard Redux-style reducer. The state contains a `history` stack (past states) and a `future` stack (undone states).
+To provide a seamless user experience, we implemented a custom state snapshotting system. Instead of tracking individual property changes, we treat the board state as a series of immutable snapshots.
+
+**How it works:**
+Whenever you perform a "destructive" action (like moving a task or deleting one), the application takes a picture of the current board and saves it to a "Past" stack. If you click **Undo**, the app simply swaps the current board with the last one from that stack.
 
 ```mermaid
-graph TD
-    A[Action Dispatched] --> B{Is State Mutating?}
-    B -- Yes --> C[Push Current State to History]
-    C --> D[Apply Action to State]
-    D --> E[Clear Future Stack]
-    B -- No/Undo --> F[Pop from History]
-    F --> G[Move Current State to Future]
-    G --> H[Apply Popped State]
+sequenceDiagram
+    participant User
+    participant App
+    participant Past Stack
+    participant Future Stack
+
+    User->>App: Moves Task
+    App->>Past Stack: Push current board state
+    App->>App: Update board with new position
+    App->>Future Stack: Clear (Timeline changed!)
+    
+    User->>App: Clicks Undo
+    App->>Future Stack: Move current board state
+    App->>Past Stack: Pop last state
+    Past Stack->>App: Restore previous board
 ```
 
-**Implementation Details:**
-- **Snapshots**: Before any mutation (ADD, MOVE, DELETE), the `pushToHistory` helper copies the current state (omitting the history/future metadata to prevent recursive bloat).
-- **Limit**: History is capped at 15 items to maintain performance and memory safety.
+- **Efficiency**: We only save the necessary data (tasks and their order).
+- **Limit**: To keep the app fast and memory-efficient, we remember the last 15 actions.
 
 ---
 
